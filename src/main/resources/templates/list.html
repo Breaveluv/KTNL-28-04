@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Artifact List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Artifact Management</h2>
+        <a th:href="@{/add}" class="btn btn-primary">Add New Artifact</a>
+    </div>
+
+    <!-- Search Form -->
+    <form th:action="@{/}" method="get" class="form-inline mb-4">
+        <input type="text" name="keywork" th:value="${keywork}" class="form-control mr-sm-2" placeholder="Search by name or origin...">
+        <button type="submit" class="btn btn-outline-success">Search</button>
+        <a th:href="@{/}" class="btn btn-outline-secondary ml-2">Reset</a>
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Origin</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="artifact : ${page.content}">
+            <td th:text="${artifact.id}">1</td>
+            <td th:text="${artifact.name}">Name</td>
+            <td th:text="${artifact.origin}">Origin</td>
+            <td th:text="${artifact.date}">2024-01-01</td>
+            <td>
+                <a th:href="@{/edit/{id}(id=${artifact.id})}" class="btn btn-sm btn-warning">Edit</a>
+                <a th:href="@{/delete/{id}(id=${artifact.id})}" class="btn btn-sm btn-danger"
+                   onclick="return confirm('Are you sure you want to delete this item?')">Delete</a>
+            </td>
+        </tr>
+        <tr th:if="${page.totalElements == 0}">
+            <td colspan="5" class="text-center">No artifacts found.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" th:if="${page.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/(page=${page.number - 1}, keywork=${keywork})}">Previous</a>
+            </li>
+
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                th:classappend="${page.number == i} ? 'active'">
+                <a class="page-link" th:href="@{/(page=${i}, keywork=${keywork})}" th:text="${i + 1}">1</a>
+            </li>
+
+            <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/(page=${page.number + 1}, keywork=${keywork})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="text-center" th:if="${page.totalPages > 0}">
+        <p class="text-muted" th:text="'Page ' + ${page.number + 1} + ' of ' + ${page.totalPages}"></p>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
